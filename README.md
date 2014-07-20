@@ -42,7 +42,7 @@ The vocabulary is stored in `Brown_vocab.prob`, and the empirical replacement di
 
 **TODO:** Clusters are cached between iterations to warm-start the DP-means algorithm, but is incorrect since DP-means monotonically splits existing clusters.
 
-### plotEmbeddings.py
+### PlotEmbeddings.py
 **Usage:**
 
 `python plotEmbeddings.py [fileName, default:'Brown_embed.1']`
