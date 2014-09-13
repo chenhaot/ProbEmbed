@@ -1,0 +1,129 @@
+-Overview
+
+Logistic Markov Embedding (LME) is a software developed by Shuo Chen (shuochen@cs.cornell.edu) and Joshua L. Moore (jlmo@cs.cornell.edu) from the Dept. of Computer Science, Cornell University. It learns from sequence data to embed the elements that constitute the sequences. We originally used it in music playlists modeling. Please see the references for more details. This program is granted free of charge for research and education purposes. However you must obtain a license from the authors to use it for commercial purposes. Since it is free, there is no warranty for it.
+
+**********ALERT!ALERT!ALERT!**********
+The program has been tinkered with, and now creates two additional executables: Logistic[Embed/Pred] as intended by the software's authors, as well as DPT[Embed/Pred] that implements a different regularizer and model distribution.
+
+-Build
+
+The software is implemented in C without using any non-standard libraries. A Makefile that uses gcc compiler is also included. To build the software, a simple "make" in the same directory as the source files will do. It creates two binaries LogisticEmbed and LogisticPred in the same directory. The building has been tested on various systems including GNU/Linux 2.6.9, 2.6.32, 2.6.18, 3.2.0, Mac OS X Lion and also Cygwin 1.7.15-1 with full installation for Windows.
+
+
+-Usage
+
+LogisticEmbed takes a training playlist dataset as input and produces an embedding/model file for the songs. LogisticPred takes a testing playlist dataset and an embedding/model file as input and print to stdout the average log-likelihood on the test set.  
+
+Format of the playlist data:
+The first line of the data file is the IDs for the songs, separated by a space. The second line are the number of appearances of each song in the file, also separated by a space. In fact these two lines are not essential in the program, you can replace it with any integer placeholders. Starting from the third line are the playlists, with each song represented by its integer ID in this file (from 0 to the total number of songs minus one). Note that in the playlist data file, each line is ended with a space.
+
+Format of the tag data:
+The tag data file has the same number of lines as the total number of songs in the playlist data. Each line is the tags for a song, represented by integers from 0 to the total number of tags minus one and separated by space. If a song does not have any tag, its line is just a '#'. Note that for the tag file, there is no space at the end of each line.
+
+We provide sample files, which are the datasets we used for our papers. You can download them at http://lme.joachims.org. 
+
+Training:
+LogisticEmbed is used in the following format:
+
+	LogisticEmbed [options] training_file model_file
+
+where training_file is the input training playlist set, model_file is the model to output. A tag file can be inputted with -x option (see the following).
+
+Available options are:
+
+-t      [1, 2, 3, 4]      - 1: Dual-Point model with full gradient training
+                            2: Single-Point model with stochastic gradient training (default)
+                            3: Single-Point model with stochastic gradient training and does not allow transition from a song to itself 
+                            4: Dual-Point model with stochastic gradient training
+                            (2 and 4 are most commonly used in our papers)
+
+-d      int               - Dimensionality of the embedding (default 2)
+
+-i      float             - Learning rate (default 300.0)
+
+-e      float             - Error allowed for termination (default 0.00001)
+
+-w      int               - Number of last few iterations that the program tracks to determine termination  (default 10)
+
+-a      float             - Adaptively increase the learning rate by this number if the improvement of the training likelihood is less than 0.005 (default 1.1)
+
+-b      float             - Adaptively decrease the learning rate by this number if the training likelihood deteriorates (default 2.0)
+
+-l      float             - Regularization coefficient (default 1.0)
+
+-g      int               - Defines the mode of regularization. If the argument is a single digit, the same regularization mode is set for the song point regularizer and (if applicable) the tag point regularizer. If the argument is two digits, the first digit is the mode of regularization for the song point regularizer, and the second is for the tag point regularizer. In our experiments, we only used the song point regularizer, so for any non-tag model, a single digit will reproduce our settings, and for any tag model, the argument 10 will reproduce our experiments. There are four possible values: 0) No regularizer, 1) total point norm regularizer, 2) for dual point models only, penalize the distance from start point to end point for each song, 3) use both 1 and 2 simultaneously. Default 0.
+
+-u      float             - If regularization mode 3 is used in a dual point model, this defines the regularization coefficient of the R2 (distance from start point to end point of each song) part of the regularizer as a function of the argument for -l (lambda). If lambda is set to x and this flag is set to y, then the R1 (norm of points) regularizer will have coefficient x while the R2 regularizer will have coefficient xy. Default 1.0.
+
+-m      [0, 1]            - Whether to turn on the landmark heuristic (default 0) 
+
+-q      int               - Number of landmarks. It will automatically decides according to the size of the training set if you put a 0 here (default 0) 
+
+-y      float             - Ratio of songs that should be included to compute the partition function when using the landmark heuristic (default 0.3, see [1] for more details)
+
+-0      int               - Number of iterations before fixing the landmarks (default 100)
+
+-k      [0, 1]            - Whether to hash the transition pairs. You might want to try both to see which is faster (default 1) 
+
+-p      [0, 1]            - Whether to enable the popularity term (default 0, see [1] for more details) 
+
+-x      string            - The tag file. If you provide it, the program will embed both songs and tags (default no tag file provided, see [2] for more details) 
+
+**********ALERT!ALERT!ALERT!**********
+The DPT[Embed/Pred] only implement a subset of the options of Logistic[Embed/Pred]. For training, these are:
+-d      int               - Dimensionality of the embedding (default 2)
+
+-i      float             - Learning rate (default 300.0)
+
+-e      float             - Error allowed for termination (default 0.00001)
+
+-w      int               - Number of last few iterations that the program tracks to determine termination  (default 10)
+
+-a      float             - Adaptively increase the learning rate by this number if the improvement of the training likelihood is less than 0.005 (default 1.1)
+
+-b      float             - Adaptively decrease the learning rate by this number if the training likelihood deteriorates (default 2.0)
+
+-l      float             - Regularization coefficient (default 1.0)
+
+-g      int               - Defines the mode of regularization. 0) No regularizer, 1) total point norm regularizer, 2) DP-means regularizer  Default 0.
+
+-u      float             - If regularization mode 2 is used in a dual point model, this defines the Dirichlet Process hyper-parameter.
+
+
+Testing:
+
+LogisticPred is used in the following format:
+
+	LogisticPred [options] testing_file model_file
+
+where testing_file is the input testing playlist set, model_file is the model obtained from LogisticEmbed. A tag file can be inputted with -x option (see the following). The result will be printed to stdout.
+
+Available options are:
+
+-a      [0, 1]            - Whether to allow transition from a song to itself. It does not make much difference in practice (default 1) 
+
+-x      string            - The tag file. You have to provide it if you trained with tags (default not provided)
+
+-n      int               - Test on n-hop transitions (default 1, see [1] for details) 
+
+-k      [0, 1]            - Whether to hash the transition pairs. You might want to try both to see which is faster (default 1) 
+
+
+-Example
+
+The following two command lines show how to train a Single-Point model without regularization in 10 dimensions on the training set, and then test for average log-likelihood on the test set:  
+
+LogisticEmbed -t 2 -d 10 train.txt model.ebd
+LogisticPred test.txt model.ebd
+
+-Bug Report
+
+Please contact the authors if you spot any bug in the software.
+
+-References
+
+If you use the software please cite the following papers:
+
+[1] Shuo Chen, Joshua L. Moore, Douglas Turnbull, Thorsten Joachims, Playlist Prediction via Metric Embedding, ACM Conference on Knowledge Discovery and Data Mining (KDD), 2012.
+
+[2] Joshua L. Moore, Shuo Chen, Thorsten Joachims, Douglas Turnbull, Learning to Embed Songs and Tags for Playlists Prediction, International Society for Music Information Retrieval (ISMIR), 2012.
