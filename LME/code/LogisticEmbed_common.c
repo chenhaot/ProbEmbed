@@ -440,6 +440,14 @@ void exp_on_vec(double* vec, int length)
 	vec[i] = exp(vec[i]);
 }
 
+//ADITH: To support inverting
+void inverse_on_vec(double* vec, int length)
+{
+    int i;
+    for(i = 0; i < length; i++)
+	vec[i] = 1.0/vec[i];
+}
+
 void log_on_vec(double* vec, int length)
 {
     int i;

@@ -90,6 +90,7 @@ double* randvec(int m, double c);
 void Array2Dexclcopy(double** src, double** dest, int m, int n, int excl_idx);
 double innerprod(double* vec1, double* vec2, int length);
 void exp_on_vec(double* vec, int length);
+void inverse_on_vec(double* vec, int length);   //ADITH: To support inversion
 void log_on_vec(double* vec, int length);
 void sum_along_direct(double** X, double* vec, int m, int n, int direct);
 double mat_norm_diff(double** X1, double** X2, int m, int n);

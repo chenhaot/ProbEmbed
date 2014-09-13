@@ -32,14 +32,14 @@ LogisticEmbed: LogisticEmbed.o common.o ptable.o ttable.o gtable.o ltable.o
 LogisticPred: LogisticPred.o common.o ptable.o ttable.o gtable.o ltable.o
 	$(LD) -o LogisticPred LogisticPred.o common.o ptable.o ttable.o gtable.o ltable.o $(LFLAGS)
 
-DPTEmbed.o: DPTEmbed.h DPTEmbed.c
+DPTEmbed.o: LogisticEmbed.h DPTEmbed.c
 	$(CC) -o DPTEmbed.o DPTEmbed.c -c $(CFLAGS) 
 
-DPTPred.o: DPTPred.h DPTPred.c
+DPTPred.o: LogisticPred.h DPTPred.c
 	$(CC) -o DPTPred.o DPTPred.c -c $(CFLAGS) 
 
 DPTEmbed: DPTEmbed.o common.o ptable.o ttable.o gtable.o ltable.o
-	$(LD) -o DPTEmbedEmbed DPTEmbed.o common.o ptable.o ttable.o gtable.o ltable.o $(LFLAGS) 
+	$(LD) -o DPTEmbed DPTEmbed.o common.o ptable.o ttable.o gtable.o ltable.o $(LFLAGS) 
 
 DPTPred: DPTPred.o common.o ptable.o ttable.o gtable.o ltable.o
 	$(LD) -o DPTPred DPTPred.o common.o ptable.o ttable.o gtable.o ltable.o $(LFLAGS)
