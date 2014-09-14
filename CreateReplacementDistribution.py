@@ -79,7 +79,7 @@ for elem, cnt in trigrams.items():
     currDict[context] = cnt
     currDict['_SUM_'] += cnt
     wordContextDict[currWord] = currDict
-    
+    # what is going on here?    
     currDict = contextWordDict[context]
     currDict[currWord] = cnt
     currDict['_SUM_'] += cnt

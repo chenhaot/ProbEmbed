@@ -1,0 +1,78 @@
+\documentclass{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage{default}
+
+\usetheme{CambridgeUS}
+\usecolortheme{beaver}
+
+\title[ProbEmbed]{Probablistic Embedding: Learning Embeddings with Dirichlet Processes and Heavy Tails}
+\author{Adith -- Chenhao -- Moontae}
+\institute{Cornell}
+\date{September 2014}
+
+\begin{document}
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}{Word embeddings}
+  \begin{itemize}
+    \item Mapping words/phrases into a continuous space
+    \item It has proven useful in different contexts (citation, insert a plot on analogy here)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Why do we want a generative model of embedding?}
+  \begin{itemize}
+    \item Learning problem can be probablistically justified
+    \item Evaluation can be aligned with learning objective
+    \item Adding complexity can be modular
+  \end{itemize}
+  \pause
+  Hopefully, we can also recover the good performance in other settings
+\end{frame}
+
+\begin{frame}{Probablistic fodel with formal notations}
+  \begin{block}{Basic notations}
+    $D$: all observations\\
+    $X$: word embeddings
+  \end{block}
+  \begin{block}{Bayesian framework}
+    $Pr(X)$: prior\\
+    $Pr(D|X)$: likelihood
+  \end{block}
+  \begin{block}{Problem}
+    Learning: $argmax_{X} Pr(X)Pr(D|X)$\\
+    Evaluation: $Pr(D_{heldout}|X)$
+  \end{block}
+\end{frame}
+
+
+\begin{frame}{DP Means prior}
+  \begin{block}{Model our intuition on concept clustering in the prior}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Replacement game}
+  \begin{block}{Model heavy tail distributions}
+    $$Pr(w_j|w_i, X) = \frac{\frac{1}{1+(X_i-X_j)^2}}{\sum_{w}\frac{1}{1+(X_w-X_i)^2}}$$
+  \end{block}
+  \pause
+  \begin{block}{Learning problem}
+    $$argmin_{X, \mu, z, k} -\sum_{i}\sum_{j}Pr(w_j|w_i, X)+\lambda(\sum_i|||X_i-\mu_{z_i}|_2^2 + \sigma k)$$
+  \end{block}
+\end{frame}
+
+\begin{frame}{Preliminary experiments with song embeddings from playlists}
+\end{frame}
+
+\begin{frame}{Questions?}
+  \begin{itemize}
+    \item Replacement game, generation game or other likelihood?
+    \item Can we actually evaluate based on generative story?
+    \item What other evaluations should we do \& who to compare with?
+  \end{itemize}
+\end{frame}
+
+\end{document}
