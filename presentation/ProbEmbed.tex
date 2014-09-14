@@ -1,12 +1,12 @@
 \documentclass{beamer}
 
 \usepackage[utf8]{inputenc}
-\usepackage{default}
+\usepackage{graphicx}
 
 \usetheme{CambridgeUS}
 \usecolortheme{beaver}
 
-\title[ProbEmbed]{Probablistic Embedding: Learning Embeddings with Dirichlet Processes and Heavy Tails}
+\title[ProbEmbed]{Generative Embedding: Learning Embeddings with Dirichlet Processes and Heavy Tails}
 \author{Adith -- Chenhao -- Moontae}
 \institute{Cornell}
 \date{September 2014}
@@ -16,38 +16,58 @@
 \titlepage
 \end{frame}
 
-\begin{frame}{Word embeddings}
+\begin{frame}{Learning embeddings}
   \begin{itemize}
-    \item Mapping words/phrases into a continuous space
-    \item It has proven useful in different contexts (citation, insert a plot on analogy here)
+    \item Mapping discrete atoms (words/phrases) into a continuous space
+    \item Useful representation for several NLP tasks \cite{Turian}
+  \end{itemize}
+\begin{figure}[h!]
+  \caption{Discovering implicit relationships between words \cite{CBOW}}
+  \centering
+    \includegraphics[width=0.5\textwidth]{CBOW.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{An utter and incomplete history of embeddings}
+  \begin{itemize}
+    \item Distributional hypothesis \cite{Lillian}
+    \item Generative Topic Models \cite{LDA}
+    \item SENNA \cite{Collobert}
+    \item WordReprs \cite{Turian}
+    \item NCE \cite{Mnih}
+    \item Multi-prototype \cite{Socher}
+    \item CBOW/Skip-gram \cite{CBOW}
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Why do we want a generative model of embedding?}
-  \begin{itemize}
-    \item Learning problem can be probablistically justified
-    \item Evaluation can be aligned with learning objective
-    \item Adding complexity can be modular
-  \end{itemize}
-  \pause
-  Hopefully, we can also recover the good performance in other settings
+\begin{frame}{Goal}
+Hopefully, generative models also recover good performance of existing embeddings in other settings.
 \end{frame}
 
-\begin{frame}{Probablistic fodel with formal notations}
-  \begin{block}{Basic notations}
+\begin{frame}{Why generative models?}
+  \begin{itemize}
+    \item Learning problem is well specified
+    \item Modular models for adding complexity/assumptions
+    \item Embedding quality aligned with learning objective
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Formal specification}
+  \begin{block}{Notation}
     $D$: all observations\\
     $X$: word embeddings
   \end{block}
   \begin{block}{Bayesian framework}
     $Pr(X)$: prior\\
-    $Pr(D|X)$: likelihood
+    $Pr(D | X)$: likelihood
   \end{block}
   \begin{block}{Problem}
-    Learning: $argmax_{X} Pr(X)Pr(D|X)$\\
-    Evaluation: $Pr(D_{heldout}|X)$
+    Learning: $X^* = argmax_{ X } Pr(X | D) = argmax_{ X } Pr(X) \cdot Pr(D | X)$\\
+    Evaluation: $Pr(D_{heldout}|X^*)$
   \end{block}
+\pause
+What other evaluations should we do \& who to compare against?
 \end{frame}
-
 
 \begin{frame}{DP Means prior}
   \begin{block}{Model our intuition on concept clustering in the prior}
@@ -73,6 +93,11 @@
     \item Can we actually evaluate based on generative story?
     \item What other evaluations should we do \& who to compare with?
   \end{itemize}
+\end{frame}
+
+\begin{frame}[allowframebreaks]{References}
+  \bibliographystyle{amsalpha}
+  \bibliography{ProbEmbed}
 \end{frame}
 
 \end{document}
