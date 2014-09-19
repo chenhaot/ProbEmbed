@@ -13,7 +13,7 @@
 \title[ProbEmbed]{Learning Embeddings with Dirichlet Processes and Heavy Tails}
 \author{Adith -- Chenhao -- Moontae}
 \institute{Cornell}
-\date{September 2014}
+\date{September 19th, 2014}
 
 \begin{document}
 \begin{frame}
@@ -23,18 +23,32 @@
 \begin{frame}{Learning embeddings}
   \begin{itemize}
     \item Mapping discrete atoms (words/phrases) into a continuous space
+    \item To achieve a distributed and dense representation \cite{Hinton} 
     \item Useful representation for several NLP tasks \cite{Turian}
   \end{itemize}
+ \vspace{-10px}
 \begin{figure}[h!]
   \caption{Discovering implicit relationships between words \cite{CBOW}}
   \centering
+    %\includegraphics[trim = 0mm 80mm 0mm 0mm, width=0.6\textwidth]{CBOW.png}
     \includegraphics[width=0.5\textwidth]{CBOW.png}
 \end{figure}
+%\vspace{40px}
+\end{frame}
+
+\begin{frame}{Learning embeddings}
+\begin{figure}[h!]
+  \caption{Discovering concept clusters \cite{Socher}}
+  \centering
+    %\includegraphics[trim = 0mm 0mm 0mm 1mm, width=0.9\textwidth]{MultipleVectorWordEmbedding.pdf}
+    \includegraphics[width=0.7\textwidth]{MultipleVectorWordEmbedding.pdf}
+\end{figure}
+\begin{itemize}
+    \item A typical way to validate embedding quality
+\end{itemize}
 \end{frame}
 
 \begin{frame}{An incomplete and utter history of word embeddings}
-\begin{tabular}{p{0.5\textwidth}p{0.5\textwidth}}
- \begin{minipage}{.48\textwidth}
   \begin{itemize}
     \item Distributional clustering \cite{Lillian}
     \item SENNA \cite{Collobert}
@@ -45,16 +59,6 @@
     \item Matrix factorization approaches \cite{Moitra}
     \item Generative Topic Models \cite{LDA}
   \end{itemize}
-\end{minipage}
-&
-\begin{minipage}{.48\textwidth}
-\begin{figure}[h!]
-  \caption{Discovering concept clusters \cite{Socher}}
-  \centering
-    \includegraphics[width=0.9\textwidth]{MultipleVectorWordEmbedding.pdf}
-\end{figure}
-\end{minipage}
-\end{tabular}
 \end{frame}
 
 \begin{frame}{Goal}
@@ -71,7 +75,7 @@ A generative model of word embeddings that
 
 \begin{frame}{Why generative models?}
   \begin{itemize}
-    \item Learning problem is well specified
+    \item Learning problem is well specified in a principled way
     \item Modular models for adding complexity/assumptions
     \item Embedding quality aligned with learning objective
     \item Diagnostics to verify model assumptions
@@ -102,12 +106,12 @@ A generative model of word embeddings that
   	\begin{itemize}
     		\item $D: $ Playlists $p = s_1 \dots s_{|p|}$, first order markov chains
     		\item $s_i \mapsto X_i \overset{iid}{\sim} \mathcal{N}(\vec{0}, \lambda^2 \mathcal{I})$\\
-    		\item $\Pr(s_j \mid s_i ; X) \propto exp(-\| X_i - X_j \|^2)$
+    		\item $\Pr(s_j \mid s_i ; X) \propto expo(-\| X_i - X_j \|^2)$
     \end{itemize}
     \end{block}
     \begin{block}{Learning}
     		\begin{align*}
-    		argmax_{ X } \sum_p \sum_{i=1}^{|p|-1} \log \Pr(s_{i+1} \mid s_i ; X) &+ \sum_i \log \Pr(X_i) \\
+    		argmax_{ X } \prod_p \prod_{i=1}^{|p|-1} \Pr(s_{i+1} \mid s_i ; X) &\cdot \prod_i \Pr(X_i) \\
 		\equiv argmin_{ X } -\sum_i \sum_j \#(s_i \rightarrow s_j) \cdot \log \Pr(s_j \mid s_i ; X) &+ \frac{1}{2 \lambda^2} \sum_i \| X_i \|^2
 		\end{align*}
     \end{block}
@@ -118,15 +122,24 @@ A generative model of word embeddings that
 \column{5.5cm}
 \begin{figure}
   \caption{Logistic Markov Embedding on \emph{YES-small} dataset \cite{LME}}
-    \includegraphics[width=0.9\textwidth]{LME.png}
+    \includegraphics[width=0.95\textwidth]{LME.png}
 \end{figure}
 \column{5.5cm}
 \pause
 \begin{figure}
   \caption{Heavy-tailed Dirichlet Process Embedding}
-    \includegraphics[width=0.9\textwidth]{ProbEmbed.png}
+  \vspace{15px}
+    \includegraphics[trim=0mm 2mm 0mm 0mm, width=0.95\textwidth]{ProbEmbed.png}
 \end{figure}
 \end{columns}
+\end{frame}
+
+\begin{frame}{Why use heavy-tailed distribution?}
+  \begin{itemize}
+    \item Heavy-tails can properly model many small probabilities
+    \item Avoids ``crowding problem'' (curse of dimensionality)
+    \item Not enough space that models high-dimensional points in low dimensional space
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Heavy-Tailed Dirichlet Process Markov Embedding}
@@ -162,6 +175,27 @@ A generative model of word embeddings that
 	Should we model replacement probability or co-occurrence (or other)?
   \end{alertblock}
 \end{frame}
+
+\begin{frame}{Learning clustered word embeddings}
+  \begin{block}{Co-occurrence matrix $C$}
+  \begin{align*}
+   \hat{\Pr}(w_j \mid w_i ; D) &= \hat{\Pr}(w_j, w_i ; D) / \hat{\Pr}(w_i ; D)\\                             
+    & = \frac{\hat{\Pr}(w_j, w_i ; D)}{\sum_{j'} \hat{\Pr}(w_j', w_i ; D)} = \frac{C_{ji}}{\sum_{j'}C_{j'i}}                        
+  \end{align*}
+  \end{block}
+  \pause
+  \begin{alertblock}{Problem}
+    \begin{itemize}
+       \item Could be very sparse
+       \item Less occurring words are rewarded during normalization process
+       \item Unclear what the correct diagonal entries are
+       \item Need to satisfy certain algebraic structures
+    \end{itemize}
+  \end{alertblock}
+\end{frame}
+
+
+
 
 \begin{frame}{Learning clustered word embeddings}
   \begin{block}{Objective: Minimize KL-Divergence}
