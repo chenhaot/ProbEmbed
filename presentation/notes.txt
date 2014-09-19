@@ -1,0 +1,21 @@
+Comments/suggestions:
+
+Co-occurence vs replacement
+both nice properties
+
+Replace prior based on part-of-speech
+
+data: penntree bank with part-of-speech
+
+Vikram: 1, we wanted to have generative story
+Xanda: 2, we can evaludate based on generative stody
+Jack:3, what are good embeddings? evaluate clustering
+***: 3, not sure what he says
+lu: 3, compare to existing state-of-art tasks
+jon: 3, mainstream NLP tasks, potential for this work, or get other people interested in this framework
+tobias: 3, optimizing likehood, then structure, Mikolav optimizes the models for word analogy tasks. boils down to priors for certain tasks
+arzoo: 3, these word embedding can be used as initial parameters. new evaluation measure people did not think of
+***: skip
+david: a bizare evaluation, semantic priming, speed in priming, close probability, think of the next word
+xilun: 4
+
