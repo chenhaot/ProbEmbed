@@ -1,0 +1,81 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amscd}
+\usepackage{amsfonts}
+\usepackage{graphicx}%
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{titling}
+\usepackage{stmaryrd}
+\usepackage[margin=2cm]{geometry}
+
+\theoremstyle{plain} \numberwithin{equation}{section}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{finalremark}[theorem]{Final Remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{question}{Question} 
+
+\setlength{\parskip}{0.5 \baselineskip}%
+\setlength{\headheight}{15pt}
+\setlength{\droptitle}{-100pt}
+
+\titlespacing{\paragraph}{%
+  0pt}{%              left margin
+  0pt}{% space before (vertical)
+  1em}%               space after (horizontal)
+
+\pagestyle{fancy}\lhead{September 2014} \rhead{ProbEmbed}
+\chead{{\large{Proposal}}} \lfoot{} \rfoot{\bf \thepage} \cfoot{}
+
+\newcounter{list}
+
+\title{Learning embeddings with Dirichlet processes and heavy tails}
+\author{Adith Swaminathan, \href{fa234@cornell.edu}{fa234@cornell.edu} \\
+Chenhao Tan, \href{chenhao@cs.cornell.edu}{chenhao@cs.cornell.edu} \\
+Moontae Lee, \href{ml2255@cornell.edu}{ml2255@cornell.edu}}
+
+\begin{document}
+\maketitle
+
+\begin{question}{What are you trying to do?}
+\end{question}
+We are developing a generative model of word embeddings that
+\begin{itemize}
+\item Takes as input $D$: all observed text
+\item Outputs an embedding $X$: words situated in a vector space
+\item such that the embeddings \emph{cluster around concepts}
+\item distances/directions in the embedding space directly model data distribution
+\item which is scalable to learn
+\item and also recover good performance of existing embeddings in downstream text analysis tasks.
+\end{itemize}
+
+\begin{question}{Why is it hard?}
+\end{question}
+
+
+\begin{question}{How is it being done today?}
+\end{question}
+
+\begin{question}{What has changed that makes it possible to do something else?}
+\end{question}
+
+\begin{question}{How will you know whether you are doing a good job?}
+\end{question}
+
+\begin{question}{Who will want to know what your results are?}
+\end{question}
+
+\bibliographystyle{alpha}
+\bibliography{ProbEmbed}
+
+\end{document}

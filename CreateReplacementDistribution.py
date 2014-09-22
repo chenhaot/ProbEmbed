@@ -16,7 +16,7 @@ trigrams = cPickle.load(f)
 f.close()
 
 stopWords = set()
-stopWFile = open('/home/adith/nltk_data/corpora/stopwords/english','r')
+stopWFile = open('/media/adith/DATA/datasets/nltk_data/corpora/stopwords/english','r')
 for line in stopWFile:
     token = line.strip().lower()
     stopWords.add(token)

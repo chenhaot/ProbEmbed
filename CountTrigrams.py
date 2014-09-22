@@ -8,11 +8,12 @@ Created on Sun Jul 06 19:30:32 2014
 import nltk.corpus
 import nltk.tokenize.punkt
 import nltk.stem.wordnet
-import nltk.tag.simplify
 import collections
 import string
 import cPickle
 import sys
+
+nltk.data.path.append("/media/adith/DATA/datasets/nltk_data/")
 
 stopWords = set()
 #stopWFile = open('nltk_data/corpora/stopwords/english','r')
@@ -22,7 +23,7 @@ stopWords = set()
 #stopWFile.close()
 
 lmtzr = nltk.stem.wordnet.WordNetLemmatizer()
-text = nltk.corpus.brown.tagged_sents()
+text = nltk.corpus.brown.tagged_sents(tagset='simple')
 
 wordNetTagMap = {'ADJ':'a', 'ADV':'r', 'FW':'n',
                  'MOD':'v', 'N':'n', 'NP':'n',
@@ -38,15 +39,16 @@ def isNumber(s):
     return False
 
 #punctTransTable = string.maketrans(string.punctuation, ' '*len(string.punctuation))
+punctTransTable = {ord(c): None for c in string.punctuation}
 
 def processWordTag(word, tag):
     if len(word) > 1:
         lower_word = word.lower()
         if lower_word in stopWords:
             return '_SSS_'
-        new_tag = wordNetTagMap.get(nltk.tag.simplify.simplify_brown_tag(tag), 'n')
+        new_tag = wordNetTagMap.get(tag, 'n')
         new_word = lmtzr.lemmatize(lower_word, new_tag)
-        final_word = new_word.translate(None, string.punctuation).strip()
+        final_word = new_word.translate(punctTransTable).strip()
         if isNumber(final_word):
             return '_NNN_'
         if len(final_word)>1:
