@@ -1,0 +1,87 @@
+\documentclass[letterpaper]{article}
+\usepackage{times}
+\usepackage[numbers]{natbib}
+\usepackage{verbatim}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{url}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{afterpage}
+\usepackage[dvipsnames]{color}
+\usepackage{mfirstuc}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{multirow}
+\usepackage{rotating}
+\usepackage{listings}
+
+\title{
+Chenhao's thought on the embedding project
+}
+
+\begin{document}
+
+\maketitle
+
+To begin with, let us revisit our motivation for this project. We started from the idea of generative embedding.
+One of our main argument is that current embedding does not involve anything about euclidean distance, while many of the evaluations involve euclidean distance.
+I think there are two places that I find a bit confusing now:
+
+\begin{enumerate}
+\item Most of the neural language models are actually generative. If we ignore the part about bad priors, they can be argued as bayesian as well.
+\item The disconnection from learning and evaluation may be due to bad evaluation instead of bad modeling. Though we alluded to this, it may actually make sense that we try to think of better ways of evaluating word embeddings before proposing embedding models that aligns with people's current way of evaluation using euclidean distance.
+\end{enumerate}
+
+This motivates rethinking about why we need embeddings.
+By and large, there are two goals:
+\begin{enumerate}
+\item mapping words into a space that semantically makes sense.
+This entails concept clusters that we have talked about. Thus it aligns well with the Dirichlet processes as prior.
+\item mapping words into a continuous space that helps other learning tasks. One good reason for this is the sparsity issue in most learning tasks.
+\end{enumerate}
+
+Although the nice hope is that these two objectives align with each other, it probably does not always hold.
+This is the reason that I like the ``Natural Language Processing (Almost) from Scratch'' paper a lot. In many scenarios, people are more interested in the second task; for the second task, it makes sense to learn a different embedding for different learning tasks.
+
+{\em Disclaimer:} It is of course fantastic that there is a general embedding that works well for both goals in any learning tasks. But I am not sure that is an interesting goal for our task. It seems to be more of a Google's job.
+
+It seems to me that the first goal is an interesting and important one. The idea of concept clusters also matches topic models quite well.
+This makes me think that LDA+Embedding may be actually a better place to start with.
+If we follow this line, we avoid comparing performance in all these learning tasks for which I believe specialized embedding should work better\footnote{According to Turian et al., brown clustering works really well, too.}.
+Instead, we can borrow the evaluations used for topic models, which include both held-out likelihood and some notions of good clusters.
+Here it seems to me that the notion of good clusters is still an open problem.
+I think that it would be really cool if we can find some good notion of word clusters\footnote{Another plus here is that there is no word clustering in most topic models that I know, adding word embedding and word clustering in the generative model gives us great advantage over other topic models.}.
+
+The following is my naive summarization of the current things that we have with pros and cons in my opinion\footnote{Pros and cons in terms of modeling and evaluations. I do not have the ability to think along optimizing}:
+
+\begin{enumerate}
+\item Replacement game.
+
+Pros: It models euclidean distance of words directly.
+
+Cons: There is no longer a generative story for a corpus or for a document;
+it seems necessary to compare the performance in learning tasks.
+
+\item Co-occurrence, or language model, window approach\footnote{I am just dumping the related words that I know.}. 
+
+Pros: We have a generative story now.
+
+Cons: The euclidean distance between words no longer makes sense, since we are looking at the distance between words and contexts;
+it seems necessary to compare the performance in learning tasks.
+
+\item LDA+word embedding. The main change is how to generate a word from a topic. Now a document is a multinomial distribution over concept clusters, we sample a word based a Gaussian distribution.
+
+Pros: evaluations and goals seem better defined to me
+
+Cons: if we take the Gaussian distribution, the likelihood of held-out data is not really comparable to a multinomial distribution as in most topic models; we lost the euclidean distance between words.
+\end{enumerate}
+
+
+Another point is that we mentioned that it is ideal if these models can scale up. In fact, the motivation for this noise contrastive approach is that it reduces the complexity of learning.
+The heavy-tailed distribution does not seem scalable to me.
+We can also focus on optimizing instead of modeling.
+If we can find some natural ways to speed up this natural definition of LDA+word embedding. It is very cool, too.
+This seems a non-trivial task to me ...
+
+\end{document}
