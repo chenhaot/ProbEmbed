@@ -6,7 +6,7 @@ Implementing a probabilistic model for learning embeddings, using Dirichlet proc
 ## Requirements:
 *(compatibility checked with listed version numbers)*
 * Python 2.7.3
-* NLTK 2.0
+* NLTK 3.0
 * Numpy 1.8.1
 * Scipy 0.14.0
 * Matplotlib 1.1.1
