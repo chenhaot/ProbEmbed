@@ -3,7 +3,7 @@ import sys
 import numpy
 import cPickle
 
-fileName = 'Brown_embed.1'
+fileName = 'Brown_embed.0'
 if len(sys.argv) > 1:
     fileName = sys.argv[1]
 
