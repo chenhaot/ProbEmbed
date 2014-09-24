@@ -19,6 +19,7 @@ f = open('Brown_vocab.pkl','rb')
 f.close()
 
 colors =['b', 'g', 'r', 'c', 'm', 'y', 'k', 'brown', 'blueviolet', 'cadetblue', 'aquamarine', 'chartreuse', 'coral', 'crimson', 'cornflowerblue', 'darkcyan', 'goldenrod', 'hotpink']
+#colors =['b']
 
 numClusters = numpy.shape(clusterMeans)[0]
 print "NumClusters ", numClusters

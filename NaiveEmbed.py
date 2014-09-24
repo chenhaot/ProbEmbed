@@ -82,9 +82,8 @@ def DPMeans(currEmbedding):
 
     return (clusterMeans, clusterAssignments)
 
-iterNumber = 0 
 def KLDiv(currEmbeddingFlat, clusterMeans, clusterAssignments):
-    global reg_lambda, dp_lambda, probabilities, numWords, numDim, iterNumber
+    global reg_lambda, dp_lambda, probabilities, numWords, numDim
     currEmbedding = numpy.reshape(currEmbeddingFlat, (numWords, numDim))
 
     distanceMatrix = 1 + scipy.spatial.distance.squareform(scipy.spatial.distance.pdist(currEmbedding, 'sqeuclidean'))
@@ -121,7 +120,7 @@ def KLDiv(currEmbeddingFlat, clusterMeans, clusterAssignments):
     gradientFlat = numpy.reshape(gradient, numWords*numDim)
     return (Objective, gradientFlat)
 
-ops = {'maxiter': 100000, 'disp': False, 'ftol': 1e-12, 'gtol': 1e-12, 'maxcor': 100}
+ops = {'maxiter': 10000, 'disp': True, 'ftol': 1e-10, 'gtol': 1e-10, 'maxcor': 100}
 
 X = numpy.random.randn(numWords, numDim)
 
@@ -132,7 +131,7 @@ for i in xrange(10):        #TODO: Truly iterate to convergence
     f.close()
 
     start_x = numpy.reshape(X, numWords*numDim)
-    Result = scipy.optimize.minimize(fun = KLDiv, x0 = start_x, args=(clusterMeans, clusterAssignments), method = 'L-BFGS-B', jac = True, tol = 1e-12, options = ops)
+    Result = scipy.optimize.minimize(fun = KLDiv, x0 = start_x, args=(clusterMeans, clusterAssignments), method = 'L-BFGS-B', jac = True, tol = 1e-10, options = ops)
     print "ITERATION", i, Result['success'], Result['status'], Result['message'], Result['nit']
     sys.stdout.flush()
 
