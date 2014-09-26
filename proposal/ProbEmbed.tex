@@ -44,7 +44,7 @@
 \author{%
   Moontae Lee \\ \href{ml2255@cornell.edu}{ml2255@cornell.edu}
   \and Adith Swaminathan\\ \href{fa234@cornell.edu}{fa234@cornell.edu}
-  \and Chenhao Tan\\ \href{chenhao@cs.cornell.edu}{chenhao@cs.cornell.edu} 
+  \and Chenhao Tan\\ \href{chenhao@cs.cornell.edu}{ct425@cornell.edu} 
 }
 
 
@@ -74,7 +74,7 @@ $\Rightarrow$ We want our embeddings to satisfy the following properties simulta
   \vspace{-10px}
   \setlength\itemsep{1px}
   \setlength{\itemindent}{0.4in}
-  \item Have a \emph{cluster around concepts}
+  \item Words \emph{cluster around concepts}
   \item Distances/directions in the embedding space directly model data distribution
   \item Scalable to learn
   \item Recover good performance of existing embeddings in downstream text analysis tasks.
@@ -89,7 +89,7 @@ $\Rightarrow$ We want our embeddings to satisfy the following properties simulta
   \setlength\itemsep{1px}
   \setlength{\itemindent}{0.4in}
   \item Try to optimize language model, context model, or ranking margin objectives.
-  \item Have various evaluation tasks which are not coherent to their learning processes.
+  \item Have various evaluation tasks which are not aligned with the learning processes.
   \item Visualize learned embeddings and manually verify clusters with similar semantics/syntax.
 \end{itemize}
 \vspace{3px}
@@ -101,9 +101,9 @@ $\Rightarrow$ We want our embeddings to satisfy the following properties simulta
   \vspace{-10px}
   \setlength\itemsep{1px}
   \setlength{\itemindent}{0.4in}
-  \item Put every ingredient on top of probabilistic story,  clearly defining \textit{good embeddings}.
-  \item Instead of using domain-irrelevant priors, use \textit{DP-means} to promote clustering effects.
-  \item Leverage a \textit{heavy-tailed distribution} to properly model small probabilities. 
+  \item Small variance limits of Dirichlet Processes that can be optimized tractably, giving a clustering prior.
+  \item Techniques to optimize a \textit{Heavy-tailed distribution} to properly model small probabilities. 
+%  \item Put every ingredient on top of probabilistic story,  clearly defining \textit{good embeddings}.
 \end{itemize}
 \vspace{3px}
 
@@ -114,18 +114,21 @@ $\Rightarrow$ We want our embeddings to satisfy the following properties simulta
   \vspace{-10px}
   \setlength\itemsep{1px}
   \setlength{\itemindent}{0.4in}
-  \item Intrinsic evaluation based on the generative model (not easy)
-  \item Finds appropriate external evaluation tasks (e.g., NLP applications)
-  \item Human experiments  
+  \item Intrinsic evaluation based on the generative model, e.g., held-out data perplexity (not adequate).
+  \item Find appropriate external evaluation tasks (e.g., NLP applications).
+  \item User studies using the discovered embeddings.
 \end{itemize}
 \vspace{3px}
 
 
 \begin{question}{Who will want to know what your results are?}\end{question}
 \vspace{-10px}
-$\Rightarrow$ Our research will inspire people who are interested in representation learning, topic modeling, and broadly text processing/information retrieval for exploratory data analysis.
+$\Rightarrow$ People who are interested in representation learning, topic modeling,
+and broadly text processing/information retrieval for exploratory data analysis.
 
-\paragraph{Topic modeling with word embeddings.} Another slightly different direction is to introduce the idea of good concept clustering into topic modeling. This approach replaces current multinomial distribution from topic to word with a heavy-tailed distribution from cluster centers.
+\paragraph{Topic modeling with word embeddings.} A plausible generative model is to introduce the idea of
+good concept clustering into topic modeling.
+This approach replaces current multinomial distribution from topic to word with a heavy-tailed distribution from cluster centers.
 
 % \bibliographystyle{alpha}
 % \bibliography{ProbEmbed}
