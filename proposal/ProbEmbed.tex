@@ -1,4 +1,4 @@
-\documentclass[12pt]{article}
+\documentclass[11pt]{article}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
@@ -10,7 +10,8 @@
 \usepackage{titlesec}
 \usepackage{titling}
 \usepackage{stmaryrd}
-\usepackage[margin=2cm]{geometry}
+\usepackage{enumitem}
+\usepackage[margin=2.5cm]{geometry}
 
 \theoremstyle{plain} \numberwithin{equation}{section}
 \newtheorem{theorem}{Theorem}[section]
@@ -39,43 +40,94 @@
 
 \newcounter{list}
 
-\title{Learning embeddings with Dirichlet processes and heavy tails}
-\author{Adith Swaminathan, \href{fa234@cornell.edu}{fa234@cornell.edu} \\
-Chenhao Tan, \href{chenhao@cs.cornell.edu}{chenhao@cs.cornell.edu} \\
-Moontae Lee, \href{ml2255@cornell.edu}{ml2255@cornell.edu}}
+\title{Learning Embeddings with Dirichlet Processes and Heavy Tails}
+\author{%
+  Moontae Lee \\ \href{ml2255@cornell.edu}{ml2255@cornell.edu}
+  \and Adith Swaminathan\\ \href{fa234@cornell.edu}{fa234@cornell.edu}
+  \and Chenhao Tan\\ \href{chenhao@cs.cornell.edu}{chenhao@cs.cornell.edu} 
+}
+
+
+
 
 \begin{document}
 \maketitle
 
-\begin{question}{What are you trying to do?}
-\end{question}
-We are developing a generative model of word embeddings that
+
+\begin{question}{What are you trying to do?}\end{question}
+\vspace{-10px}
+$\Rightarrow$ We are developing a generative model of word embeddings that
 \begin{itemize}
-\item Takes as input $D$: all observed text
-\item Outputs an embedding $X$: words situated in a vector space
-\item such that the embeddings \emph{cluster around concepts}
-\item distances/directions in the embedding space directly model data distribution
-\item which is scalable to learn
-\item and also recover good performance of existing embeddings in downstream text analysis tasks.
+  \vspace{-10px}
+  \setlength\itemsep{1px}
+  \setlength{\itemindent}{0.4in}
+  \item Takes as input $D$: all observed text
+  \item Outputs an embedding $X$: words situated in a vector space
 \end{itemize}
-
-\begin{question}{Why is it hard?}
-\end{question}
+\vspace{3px}
 
 
-\begin{question}{How is it being done today?}
-\end{question}
+\begin{question}{Why is it hard?}\end{question}
+\vspace{-10px}
+$\Rightarrow$ We want our embeddings to satisfy the following properties simultaneously:
+\begin{itemize}
+  \vspace{-10px}
+  \setlength\itemsep{1px}
+  \setlength{\itemindent}{0.4in}
+  \item Have a \emph{cluster around concepts}
+  \item Distances/directions in the embedding space directly model data distribution
+  \item Scalable to learn
+  \item Recover good performance of existing embeddings in downstream text analysis tasks.
+\end{itemize}
+\vspace{3px}
 
-\begin{question}{What has changed that makes it possible to do something else?}
-\end{question}
 
-\begin{question}{How will you know whether you are doing a good job?}
-\end{question}
+\begin{question}{How is it being done today?}\end{question}
+\vspace{-10px}
+\begin{itemize}
+  \vspace{-10px}
+  \setlength\itemsep{1px}
+  \setlength{\itemindent}{0.4in}
+  \item Try to optimize language model, context model, or ranking margin objectives.
+  \item Have various evaluation tasks which are not coherent to their learning processes.
+  \item Visualize learned embeddings and manually verify clusters with similar semantics/syntax.
+\end{itemize}
+\vspace{3px}
 
-\begin{question}{Who will want to know what your results are?}
-\end{question}
 
-\bibliographystyle{alpha}
-\bibliography{ProbEmbed}
+\begin{question}{What has changed that makes it possible to do something else?}\end{question}
+\vspace{-10px}
+\begin{itemize}
+  \vspace{-10px}
+  \setlength\itemsep{1px}
+  \setlength{\itemindent}{0.4in}
+  \item Put every ingredient on top of probabilistic story,  clearly defining \textit{good embeddings}.
+  \item Instead of using domain-irrelevant priors, use \textit{DP-means} to promote clustering effects.
+  \item Leverage a \textit{heavy-tailed distribution} to properly model small probabilities. 
+\end{itemize}
+\vspace{3px}
+
+
+\begin{question}{How will you know whether you are doing a good job?}\end{question}
+\vspace{-10px}
+\begin{itemize}
+  \vspace{-10px}
+  \setlength\itemsep{1px}
+  \setlength{\itemindent}{0.4in}
+  \item Intrinsic evaluation based on the generative model (not easy)
+  \item Finds appropriate external evaluation tasks (e.g., NLP applications)
+  \item Human experiments  
+\end{itemize}
+\vspace{3px}
+
+
+\begin{question}{Who will want to know what your results are?}\end{question}
+\vspace{-10px}
+$\Rightarrow$ Our research will inspire people who are interested in representation learning, topic modeling, and broadly text processing/information retrieval for exploratory data analysis.
+
+\paragraph{Topic modeling with word embeddings.} Another slightly different direction is to introduce the idea of good concept clustering into topic modeling. This approach replaces current multinomial distribution from topic to word with a heavy-tailed distribution from cluster centers.
+
+% \bibliographystyle{alpha}
+% \bibliography{ProbEmbed}
 
 \end{document}
