@@ -1,0 +1,64 @@
+% Modified from model_lda.tex
+%
+% Copyright (C) 2010,2011 Laura Dietz
+% Copyright (C) 2012 Jaakko Luttinen
+%
+% This file may be distributed and/or modified
+%
+% 1. under the LaTeX Project Public License and/or
+% 2. under the GNU General Public License.
+%
+% See the files LICENSE_LPPL and LICENSE_GPL for more details.
+
+% Topic model with word embeddings
+
+\begin{tikzpicture}[x=1.7cm,y=1.8cm]
+
+  % Nodes
+
+  % topic part
+  \node[obs]                   (w)      {$w$} ; %
+  \node[latent, above=of w]    (z)      {$z$} ; %
+  \node[latent, above=of z]    (theta)  {$\theta$}; %
+  \node[latent, above=of theta] (alpha) {$\alpha$};
+
+  % mixture gaussian for word embeddings
+
+  % More nodes
+  \node[latent, left=of w] (X)  {$X$}; %
+  \node[latent, above=of X]  (mu) {$\mu$}; %
+  \node[latent, above=of mu]  (rho) {$\rho$}; %
+  \node[latent, left=of X]  (m) {$m$}; %
+  \node[latent, left=of m]  (pi) {$\pi$}; %
+  \node[latent, above=of m]  (sigma) {$\sigma$}; %
+
+  \edge {alpha} {theta} ; %
+  \edge {theta} {z} ; %
+  \edge {z} {w} ; %
+  \edge {mu} {w} ; %
+  \edge {X} {w} ; %
+  \edge {rho} {mu} ; %
+  \edge {mu} {X} ; %
+  \edge {m} {X} ; %
+  \edge {sigma} {X} ; %
+  \edge {pi} {m} ; %
+
+  \plate [inner sep=5pt] {words} { %
+    (z)
+    (w)
+  } {$n_d$}; %
+  \plate {documents} { %
+    (words) %
+    (theta) %
+  } {$D$} ; %
+  \plate {vocab} { %
+    (m)
+    (X) %
+  } {$|V|$} ; %
+  \plate {concepts} { %
+    (mu)
+  } {$K$} ; %
+
+
+\end{tikzpicture}
+

@@ -1,0 +1,123 @@
+\documentclass[letterpaper]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amscd}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{titling}
+\usepackage{stmaryrd}
+\usepackage{enumitem}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{tikz}
+\usetikzlibrary{bayesnet}
+
+
+\theoremstyle{plain} \numberwithin{equation}{section}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{finalremark}[theorem]{Final Remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{question}{Question}
+
+\setlength{\parskip}{0.5 \baselineskip}%
+\setlength{\headheight}{15pt}
+\setlength{\droptitle}{-100pt}
+
+\titlespacing{\paragraph}{%
+  0pt}{%              left margin
+  0pt}{% space before (vertical)
+  1em}%               space after (horizontal)
+
+% math notations
+\newcommand{\hyper}{H^*}
+\newcommand{\nd}{n_d}
+\newcommand{\htd}[2]{\frac{1}{1+||#1-#2||^2}}
+\newcommand{\htdnorm}[1]{Z(#1)}
+\newcommand{\Xwi}{X_{w_i}}
+\newcommand{\muzi}{\mu_{z_i}}
+\newcommand{\norm}[1]{||#1||^2}
+\newcommand{\tsup}[2]{#1^{#2}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+
+\title{When word embedding encounters topic modeling}
+\author{%
+  Moontae Lee \\ \href{ml2255@cornell.edu}{ml2255@cornell.edu}
+  \and Adith Swaminathan\\ \href{fa234@cornell.edu}{fa234@cornell.edu}
+  \and Chenhao Tan\\ \href{chenhao@cs.cornell.edu}{ct425@cornell.edu} 
+}
+
+
+\begin{document}
+
+\maketitle
+
+Figure \ref{fig:tw_model} shows a model that combines word embeddings with topic modeling. The right hand side of this model is exactly the same as normal LDA. What Adith and I figured out this afternoon is that using Chinese restaurant processes to control the number of clusters will have to involve hierarchical Dirichlet processes. Thus we think it is a good idea to start with simpler setting. Thus we have a fixed number of topics/concept clusters ($K$).
+The left side of the model is a mixture of Gaussian. Therefore the full model is
+
+\begin{align}
+Pr(m, X, \pi, \mu, z, \theta, D|\hyper) & = Pr(D|m,X,\mu,z,\theta,\hyper)Pr(z|\theta, \hyper) Pr(\theta|\hyper) \nonumber\\
+& Pr(X|m,\mu,\hyper) Pr(m|\pi), Pr(\mu|\hyper) \nonumber\\
+& \propto \prod_{d\in D}\prod_{i=1}^{\nd}\frac{\htd{\Xwi}{\muzi}}{\htdnorm{\muzi}} \prod_{d\in D}\prod_{i=1}^{\nd} \theta_{dz_i} \prod_{d} Dir(\alpha) \nonumber \\
+& \prod_{x \in V} \pi_{m_x} \frac{e^{-||x-\mu_{m_x}||^2/2\sigma^2}}{\sqrt{2\pi}\sigma} \prod_{k=1}^K \frac{1}{\sqrt{2\pi} \rho} e^{||\mu_k||^2/2\rho^2}
+\end{align}
+
+
+It is $\propto$ because we assumed uniform norm on $\pi$. We tried to write out conditional distributions for Gibbs sampler to make ourselves familiar with the model. But this model clearly cannot be solved efficiently by using Gibbs sampling. 
+
+\begin{figure}[ht]
+\begin{center}
+\input{model}
+\end{center}
+\caption{Topic modeling with word embedding.\label{fig:tw_model}}
+\end{figure}
+
+
+So we started to derive variational methods for this. We start with EM algorithm of the mixture of Gaussian part with prior.
+We take the left part related to mixture of Gaussian first.
+The posterior distribution that we want to maximize is
+
+\begin{align}
+Pr(\pi, \mu|X, \hyper) & = \sum_m Pr(m, \mu, \pi|X, \hyper) \nonumber\\
+Pr(m, \mu, \pi|X, \hyper) &= \prod_{i=1}^V \pi_{m_i} e^{-\norm{\mu_{m_i}-X_i}/2\sigma^2}\prod_{k=1}^K e^{-\norm{\mu_k}/2\rho^2} \nonumber\\
+\log{Pr(m, \mu, \pi|X, \hyper)} &= \sum_{i=1}^{V}(log\pi_{m_i} - \norm{\mu_{m_i}-X_i}/2\sigma^2)-\sum_{k=1}^K \norm{\mu_k}/2\sigma^2 + C \nonumber
+\end{align}
+
+E-step: we compute $E_{m|\tsup{\pi}{t}, \tsup{\mu}{t}}\log{Pr(m, \mu, \pi|X, \hyper)}$.
+
+What we need is 
+
+$$\gamma_{ik}=Pr(m_i=k|\tsup{\pi}{t}, \tsup{\mu}{t})=\frac{\tsup{\pi_k}{t}e^{-\norm{\tsup{\mu_k}{t}-X_i}/2\sigma^2}}{\sum_{k'}\tsup{\pi_{k'}}{t}
+e^{-\norm{\tsup{\mu_{k'}}{t}-X_i}/2\sigma^2}}$$
+
+M-step: we update parameters so that $\tsup{\pi}{t+1}, \tsup{\mu}{t+1} = \argmax_{\tsup{\pi}{t+1}, \tsup{\mu}{t+1}}E_{m|\tsup{\pi}{t}, \tsup{\mu}{t}}\log{Pr(m, \mu, \pi|X, \hyper)}$
+
+\begin{align}
+E_m \log{Pr(m, \mu, \pi|X, \hyper)} &= \sum_{i=1}^V\sum_{k=1}^K \gamma_{ik}\log{\pi_k} - \sum_{i=1}^V\sum_{k=1}^K \gamma_{ik} \norm{\mu_k - X_i}/2\sigma^2 - \sum_{k=1}^K \norm{\mu_k}/2\rho^2 \nonumber \\
+&= \sum_{k=1}^K \log{\pi_k} \sum_{i=1}^V \gamma_{ik} + \sum_{k=1}^K (\norm{\mu_k}/2\rho^2 + \sum_{i=1}^V \gamma_{ik}\norm{\mu_k-X_i}/2\sigma^2) \nonumber
+\end{align}
+
+The first part is minimize cross entropy, using Lagrange multiplier, we can get that 
+$$\pi_k = \sum_{i=1}^V \gamma_{ik}/V$$
+
+The second part related to $\mu_k$ can be solved in closed form as well
+
+$$\mu_k = \frac{\sum_{i=1}^V\gamma_{ik}X_i/\sigma^2}{V/\sigma^2+K/\rho^2}$$
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: tex-pdf
+%%% TeX-master: t
+%%% End: 
