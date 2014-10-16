@@ -68,6 +68,6 @@ for tagged_sent in text:
     if completed%100 == 0:
         print ".",
         sys.stdout.flush()
-f = open("Brown_trigrams.pkl",'wb')
+f = open("../data/Brown_trigrams.pkl",'wb')
 cPickle.dump(trigramCounts, f, -1)
 f.close()

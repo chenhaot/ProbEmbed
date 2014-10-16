@@ -4,23 +4,26 @@ Created on Mon Jul 07 00:12:22 2014
 
 @author: Adith
 """
-import cPickle
-import scipy.sparse
 import sys
+import collections
+import cPickle
 import numpy
 import scipy
-import collections
+import scipy.sparse
+import nltk
 
-f = open('Brown_trigrams.pkl','rb')
+f = open('../data/Brown_trigrams.pkl','rb')
 trigrams = cPickle.load(f)
 f.close()
 
-stopWords = set()
-stopWFile = open('/media/adith/DATA/datasets/nltk_data/corpora/stopwords/english','r')
-for line in stopWFile:
-    token = line.strip().lower()
-    stopWords.add(token)
-stopWFile.close()
+# stopWords = set()
+# stopWFile = open('/media/adith/DATA/datasets/nltk_data/corpora/stopwords/english','r')
+# for line in stopWFile:
+#     token = line.strip().lower()
+#     stopWords.add(token)
+# stopWFile.close()
+
+stopWords = set(nltk.corpus.stopwords.words('english'))
 
 unigramFreq = collections.Counter()
 for elem, cnt in trigrams.iteritems():
@@ -123,11 +126,13 @@ for i,j in possiblePairs:
         print ".",
         sys.stdout.flush()
 
-f = open('Brown_vocab.pkl','wb')
+f = open('../data/Brown_vocab.pkl','wb')
 cPickle.dump((vocabulary, vocabList, contextWordDict, wordContextDict), f, -1)
 f.close()
 
 probabilities = probabilities.tocoo()
-f = open('Brown_prob','wb')
+f = open('../data/Brown_prob','wb')
 numpy.savez(f, probabilities.row, probabilities.col, probabilities.data)
 f.close()
+
+
